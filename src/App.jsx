@@ -130,7 +130,12 @@ export default function App() {
           </Label>
           <Input
             id="url"
-            type="url"
+            name="scrape-page"
+            type="text"
+            inputMode="url"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder="A page to scrape"
             value={url}
             onChange={(event) => setUrl(event.target.value)}
