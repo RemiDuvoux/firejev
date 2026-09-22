@@ -110,13 +110,18 @@ export default function App() {
         </p>
       </header>
 
-      <form className="pixel-frame flex flex-col gap-5" onSubmit={onSubmit}>
+      <form className="pixel-frame flex flex-col gap-5" autoComplete="off" onSubmit={onSubmit}>
         <div className="flex flex-col gap-2">
           <Label htmlFor="question" className="pixel">
             Question
           </Label>
           <Input
             id="question"
+            name="ask-question"
+            type="text"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             required
             placeholder="Is the euro the currency of France?"
             value={question}
