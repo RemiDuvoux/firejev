@@ -2,6 +2,8 @@
 
 A small proof of concept that scrapes a web page and answers one yes or no question about it.
 
+**Demo:** https://firejev.vercel.app
+
 [Firecrawl](https://www.firecrawl.dev/) fetches the page as markdown. [Jev](https://docs.typesafe.ai/) answers one yes or no question about that page.
 
 ## How it works
