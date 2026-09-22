@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
+@import "@fontsource/silkscreen/latin-400.css";
+@import "@fontsource/silkscreen/latin-700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,4 +129,139 @@
   html {
     @apply font-sans;
     }
+}
+
+body {
+  background: #6ec4ea;
+  color: #171615;
+}
+
+.pixel {
+  font-family: "Silkscreen", monospace;
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: none;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+.pixel-frame {
+  border: 4px solid #171615;
+  background: #fff;
+  box-shadow: 8px 8px 0 #171615;
+  padding: 20px;
+}
+
+.pixel-frame input {
+  height: 48px;
+  border: 4px solid #171615;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  padding: 0 12px;
+  font-size: 16px;
+  color: #171615;
+}
+
+.pixel-frame input::placeholder {
+  color: #5c564f;
+}
+
+.pixel-frame input:focus,
+.pixel-frame input:focus-visible {
+  outline: 4px solid #fab705;
+  outline-offset: 2px;
+}
+
+.pixel-ask {
+  font-family: "Silkscreen", monospace;
+  font-size: 16px;
+  line-height: 1;
+  background: #fab705;
+  color: #171615;
+  border: 4px solid #171615;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #171615;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.pixel-ask:hover:not(:disabled) {
+  background: #ffd24a;
+}
+
+.pixel-ask:focus-visible {
+  outline: 4px solid #171615;
+  outline-offset: 4px;
+}
+
+.pixel-ask:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.pixel-ask:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pixel-timer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border: 4px solid #171615;
+  padding: 10px;
+  font-family: "Silkscreen", monospace;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.pixel-error {
+  border: 4px solid #d13308;
+  color: #d13308;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pixel-verdict {
+  font-family: "Silkscreen", monospace;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  -webkit-font-smoothing: none;
+}
+
+.pixel-verdict[data-answer="no"] {
+  color: #d13308;
+}
+
+.pixel-meter {
+  height: 28px;
+  border: 4px solid #171615;
+  background: #fff;
+  padding: 3px;
+}
+
+.pixel-meter > span {
+  display: block;
+  height: 100%;
+  background: #fab705;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pixel-meter > span {
+    transition: width 180ms steps(6, end);
+  }
+}
+
+.pixel-markdown {
+  max-height: 32rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  border: 4px solid #171615;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
 }

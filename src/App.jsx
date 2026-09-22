@@ -1,14 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logo from "@/assets/logo.png";
 
 const idleStep = { status: "idle", startedAt: null, ms: null };
 const idleSteps = { firecrawl: idleStep, jev: idleStep };
@@ -20,7 +13,7 @@ function formatDuration(ms) {
 
 function StepTimers({ steps, now, firecrawlLabel }) {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-2 gap-3">
       <StepTimer label={firecrawlLabel} step={steps.firecrawl} now={now} />
       <StepTimer label="Jev" step={steps.jev} now={now} />
     </div>
@@ -30,11 +23,9 @@ function StepTimers({ steps, now, firecrawlLabel }) {
 function StepTimer({ label, step, now }) {
   const elapsed = step.status === "running" ? now - step.startedAt : step.ms;
   return (
-    <div className="flex items-baseline justify-between rounded-lg bg-muted px-3 py-2 text-sm">
+    <div className="pixel-timer">
       <span>{label}</span>
-      <span className="font-mono tabular-nums text-muted-foreground">
-        {elapsed == null ? "—" : formatDuration(elapsed)}
-      </span>
+      <span>{elapsed == null ? "—" : formatDuration(elapsed)}</span>
     </div>
   );
 }
@@ -101,102 +92,101 @@ export default function App() {
     }
   }
 
+  const yesPercent = result ? Math.round(result.probability * 100) : 0;
+
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Firecrawl + Jev</h1>
-        <p className="text-sm text-muted-foreground">
-          Firecrawl gathers markdown from a page or a web search. Jev answers one yes or no
-          question.
+    <main className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-8 px-4 py-10">
+      <header className="flex flex-col items-center gap-4 text-center">
+        <h1>
+          <img
+            src={logo}
+            alt="firejev"
+            className="mx-auto h-auto w-full max-w-xs [image-rendering:pixelated]"
+          />
+        </h1>
+        <p className="max-w-md text-sm leading-6">
+          Ask a yes or no question in English. Add a URL to scrape that page, or leave it
+          empty to search the web.
         </p>
       </header>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Question</CardTitle>
-          <CardDescription>
-            Leave the URL empty to search the web. Add one to scrape that page. Ask in
-            English.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="url">URL</Label>
-              <Input
-                id="url"
-                type="url"
-                placeholder="Optional — a page to scrape"
-                value={url}
-                onChange={(event) => setUrl(event.target.value)}
-              />
-            </div>
+      <form className="pixel-frame flex flex-col gap-5" onSubmit={onSubmit}>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="question" className="pixel">
+            Question
+          </Label>
+          <Input
+            id="question"
+            required
+            placeholder="Is the euro the currency of France?"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+          />
+        </div>
 
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="question">Question</Label>
-              <Input
-                id="question"
-                required
-                placeholder="Is the euro the currency of France?"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-              />
-            </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="url" className="pixel">
+            URL (optional)
+          </Label>
+          <Input
+            id="url"
+            type="url"
+            placeholder="A page to scrape"
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
+        </div>
 
-            {error ? (
-              <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                {error}
-              </p>
-            ) : null}
+        {error ? <p className="pixel-error">{error}</p> : null}
 
-            <Button type="submit" disabled={loading} className="self-start">
-              {loading ? "Asking…" : "Ask"}
-            </Button>
-            {steps.firecrawl.status !== "idle" || steps.jev.status !== "idle" ? (
-              <StepTimers
-                steps={steps}
-                now={now}
-                firecrawlLabel={url.trim() ? "Scrape" : "Search"}
-              />
-            ) : null}
-          </form>
-        </CardContent>
-      </Card>
+        <button type="submit" className="pixel-ask self-start" disabled={loading}>
+          {loading ? "Asking…" : "Ask"}
+        </button>
+        {steps.firecrawl.status !== "idle" || steps.jev.status !== "idle" ? (
+          <StepTimers
+            steps={steps}
+            now={now}
+            firecrawlLabel={url.trim() ? "Scrape" : "Search"}
+          />
+        ) : null}
+      </form>
 
       {result ? (
-        <section ref={resultRef} className="grid gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>{result.answer === "yes" ? "Yes" : "No"}</CardTitle>
-              <CardDescription>
-                {result.question}
-                {" · "}
-                {Math.round(result.probability * 100)}% yes
-                {result.model ? ` · ${result.model}` : ""}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {result.source.title || result.source.url}
-                {result.source.truncated ? " · markdown truncated" : ""}
-              </p>
-            </CardContent>
-          </Card>
+        <section ref={resultRef} className="flex flex-col gap-8">
+          <div className="pixel-frame flex flex-col gap-4">
+            <p className="pixel-verdict" data-answer={result.answer}>
+              {result.answer === "yes" ? "Yes" : "No"}
+            </p>
+            <p>{result.question}</p>
+            <div>
+              <div
+                className="pixel-meter"
+                role="meter"
+                aria-label={`${yesPercent}% yes`}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={yesPercent}
+              >
+                <span style={{ width: `${yesPercent}%` }} />
+              </div>
+              <p className="pixel mt-3">{yesPercent}% yes</p>
+            </div>
+            <p className="text-sm">
+              {result.source.title || result.source.url}
+            </p>
+            {result.source.truncated ? (
+              <p className="text-sm">The page was shortened before Jev read it.</p>
+            ) : null}
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Markdown sent to Jev</CardTitle>
-              <CardDescription>
-                Main content, images removed.
-                {result.usage ? ` ${result.usage.input_tokens} input tokens.` : ""}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs">
-                {result.markdown}
-              </pre>
-            </CardContent>
-          </Card>
+          <div className="pixel-frame flex flex-col gap-3">
+            <h2 className="pixel">Markdown</h2>
+            <p className="text-sm">
+              Main content, images removed.
+              {result.usage ? ` ${result.usage.input_tokens} input tokens.` : ""}
+            </p>
+            <pre className="pixel-markdown">{result.markdown}</pre>
+          </div>
         </section>
       ) : null}
     </main>
